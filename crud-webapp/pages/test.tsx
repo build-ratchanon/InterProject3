@@ -6,31 +6,31 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddIcon from "@mui/icons-material/Add";
 
 function DynamicInput() {
-//   const [data, setData] = React.useState([
-//     {
-//       detail: "",
-//     },
-//   ]);
+  //   const [data, setData] = React.useState([
+  //     {
+  //       detail: "",
+  //     },
+  //   ]);
 
-//   const handleClick = () => {
-//     let _data = [...data];
-//     _data.push({
-//       detail: "",
-//     });
-//     setData(_data);
-//   };
+  //   const handleClick = () => {
+  //     let _data = [...data];
+  //     _data.push({
+  //       detail: "",
+  //     });
+  //     setData(_data);
+  //   };
 
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
-//     const { name, value } = e.target;
-//     const onchangeVal = [...data] as any;
-//     onchangeVal[i][name] = value;
-//     setData(onchangeVal);
-//   };
-//   const handleDelete = (i: any) => {
-//     const deleteVal = [...data];
-//     deleteVal.splice(i, 1);
-//     setData(deleteVal);
-//   };
+  //   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
+  //     const { name, value } = e.target;
+  //     const onchangeVal = [...data] as any;
+  //     onchangeVal[i][name] = value;
+  //     setData(onchangeVal);
+  //   };
+  //   const handleDelete = (i: any) => {
+  //     const deleteVal = [...data];
+  //     deleteVal.splice(i, 1);
+  //     setData(deleteVal);
+  //   };
 
   ///////////////////////////////////////////////////////////////////////////
 
@@ -64,13 +64,17 @@ function DynamicInput() {
     setAllData(_allData);
   };
 
-  const handleDescriptionChange=(e: React.ChangeEvent<HTMLInputElement>, i, j)=>{
-    const {name,value}=e.target
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    i,
+    j
+  ) => {
+    const { name, value } = e.target;
     const _allData = [...allData];
     _allData[i].description[j][name] = value;
-    setAllData(_allData)
-    console.log(allData)
-}
+    setAllData(_allData);
+    console.log(allData);
+  };
 
   const handleAddDescription = (i: number) => {
     let _allData = [...allData];
@@ -82,7 +86,7 @@ function DynamicInput() {
 
   const handleDescriptionDelete = (i, j) => {
     const deleteVal = [...allData];
-    deleteVal[i].description.splice(j, 1)
+    deleteVal[i].description.splice(j, 1);
     setAllData(deleteVal);
   };
 
@@ -94,18 +98,6 @@ function DynamicInput() {
 
   return (
     <Grid className="App">
-      {/* <Button onClick={handleClick}>Add</Button>
-            {
-                data.map((val,i)=>
-                <Grid>
-                    <TextField name="detail"  value={val.detail} onChange={(e)=>handleChange(e,i)}/>
-                        
-                    <Button onClick={()=>handleDelete(i)}>Delete</Button>
-                </Grid>
-                )
-            }
-            <p>{JSON.stringify(data)}</p> */}
-
       <Button onClick={handleAddQuestion}>Add</Button>
       {allData.map((allval, i) => (
         <Grid>
@@ -128,9 +120,10 @@ function DynamicInput() {
                 onChange={(e) => handleDescriptionChange(e, i, j)}
               />
 
-              <IconButton aria-label="delete" 
+              <IconButton
+                aria-label="delete"
                 onClick={() => handleDescriptionDelete(i, j)}
-            >
+              >
                 <DeleteOutlineIcon />
               </IconButton>
             </Grid>
@@ -150,7 +143,9 @@ function DynamicInput() {
             ADD CHOICE
           </Button>
 
-          <Button onClick={() => handleQuestionDelete(i)}>Delete Question</Button>
+          <Button onClick={() => handleQuestionDelete(i)}>
+            Delete Question
+          </Button>
         </Grid>
       ))}
       <p>{JSON.stringify(allData)}</p>

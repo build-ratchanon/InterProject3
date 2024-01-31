@@ -23,35 +23,96 @@ import DynamicInput from "./test";
 
 export default function Home() {
   const [checked, setChecked] = useState(false);
-  const [data, setData] = useState([{ detail: "" }, { detail: "" }]);
-  console.log(data);
+  // const [data, setData] = useState([{ detail: "" }, { detail: "" }]);
+  // console.log(data);
 
-  const handleAdd = () => {
-    setData([...data, { detail: "" }]);
-  };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
-    const { name, value } = e.target;
-    const onchangeVal = [...data];
-    onchangeVal[i][name] = value;
-    setData(onchangeVal);
-  };
-  const handleDelete = (i: any) => {
-    const deleteVal = [...data];
-    deleteVal.splice(i, 1);
-    setData(deleteVal);
-  };
+  // const handleAdd = () => {
+  //   setData([...data, { detail: "" }]);
+  // };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
+  //   const { name, value } = e.target;
+  //   const onchangeVal = [...data];
+  //   onchangeVal[i][name] = value;
+  //   setData(onchangeVal);
+  // };
+  // const handleDelete = (i: any) => {
+  //   const deleteVal = [...data];
+  //   deleteVal.splice(i, 1);
+  //   setData(deleteVal);
+  // };
 
-  const [allData, setAllData] = useState([{ question: "" }]);
+  // const [allData, setAllData] = useState([{ question: "" }]);
+
+  // const handleAddQuestion = () => {
+  //   setAllData([...allData, { question: "" }]);
+  // };
+  // const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
+  //   const { name, value } = e.target;
+  //   const onchangeAllVal = [...allData];
+  //   onchangeAllVal[i][name] = value;
+  //   setData(onchangeAllVal);
+  // };
+
+  ///////////////////////////////////////////////////////////////////////////////
+
+  const [allData, setAllData] = useState([
+    {
+      question: "",
+      description: [{ detail: "" }, { detail: "" }],
+    },
+  ]);
 
   const handleAddQuestion = () => {
-    setAllData([...allData, { question: "" }]);
+    let _allData = [...allData];
+    _allData.push({
+      question: "",
+      description: [
+        {
+          detail: "",
+        },
+        {
+          detail: "",
+        },
+      ],
+    });
+    setAllData(_allData);
   };
+
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
     const { name, value } = e.target;
-    const onchangeAllVal = [...allData];
-    onchangeAllVal[i][name] = value;
-    setData(onchangeAllVal);
+    const _allData = [...allData] as any;
+    _allData[i][name] = value;
+    setAllData(_allData);
   };
+
+  const handleDescriptionChange=(e: React.ChangeEvent<HTMLInputElement>, i, j)=>{
+    const {name,value}=e.target
+    const _allData = [...allData];
+    _allData[i].description[j][name] = value;
+    setAllData(_allData)
+    console.log(allData)
+}
+
+  const handleAddDescription = (i: number) => {
+    let _allData = [...allData];
+    _allData[i].description.push({
+      detail: "",
+    });
+    setAllData(_allData);
+  };
+
+  const handleDescriptionDelete = (i, j) => {
+    const deleteVal = [...allData];
+    deleteVal[i].description.splice(j, 1)
+    setAllData(deleteVal);
+  };
+
+  const handleQuestionDelete = (i: any) => {
+    const deleteVal = [...allData];
+    deleteVal.splice(i, 1);
+    setAllData(deleteVal);
+  };
+
 
   return (
     <>
@@ -118,7 +179,7 @@ export default function Home() {
           <hr />
 
 
-          {allData.map((allVal, i) => (
+          {allData.map((allval, i) => (
             <Grid sx={{ p: 3 }}>
               <Grid>
                 <Typography className={styles.question} paddingBottom={3}>
@@ -127,16 +188,16 @@ export default function Home() {
                 <TextField
                   required
                   id="outlined-required"
-                  label="Question"
                   sx={{ mb: 3 }}
                   fullWidth
+                  label="Question"
                   name="question"
-                  value={allVal.question}
-                  onChange={(event) => handleQuestionChange(event, i)}
+                  value={allval.question}
+                  onChange={(e) => handleQuestionChange(e, i)}
                 />
 
                 {/* description */}
-                {data.map((val, i) => (
+                {allval.description.map((val, j) => (
                   <Grid display={"flex"} alignItems={"center"} sx={{ mb: 3 }}>
                     <FormControlLabel
                       value="correct"
@@ -153,16 +214,16 @@ export default function Home() {
                     <TextField
                       required
                       id="outlined-required"
-                      label="Description"
                       fullWidth
+                      label="Description"
                       name="detail"
                       value={val.detail}
-                      onChange={(e) => handleChange(e, i)}
+                      onChange={(e) => handleDescriptionChange(e, i, j)}
                     />
 
                     <IconButton
                       aria-label="delete"
-                      onClick={() => handleDelete(i)}
+                      onClick={() => handleDescriptionDelete(i, j)}
                     >
                       <DeleteOutlineIcon />
                     </IconButton>
@@ -176,8 +237,9 @@ export default function Home() {
                     "&:hover": { color: "#d95000" },
                   }}
                   startIcon={<AddIcon />}
-                  onClick={handleAdd}
-                >
+                  onClick={() => {
+                    handleAddDescription(i);
+                  }}                >
                   ADD CHOICE
                 </Button>
                 <hr className={styles.hr} />
@@ -199,6 +261,7 @@ export default function Home() {
                       "&:hover": { color: "#ff0000" },
                     }}
                     startIcon={<DeleteOutlineIcon />}
+                    onClick={() => handleQuestionDelete(i)}
                   >
                     DELETE
                   </Button>
@@ -234,7 +297,7 @@ export default function Home() {
           </Grid>
         </Paper>
       </Box>
-      <DynamicInput/>
+      {/* <DynamicInput/>  */}
     </>
   );
 }
