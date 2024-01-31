@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Playfair+Display:wght@700&family=Prompt&display=swap');
+
+.navBar{
+    background-color: #FFF;
+}
+
+.logo{
+    color: var(--Common-Black, #00040C);
+    font-feature-settings: 'clig' off, 'liga' off;
+
+    /* H5/Regular/24px */
+    font-family: Prompt;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 32px; /* 133.333% */
+    letter-spacing: 0.18px;
+    text-transform: capitalize;
+}
+
+.question{
+    color: #212121;
+    font-feature-settings: 'clig' off, 'liga' off;
+
+    /* H6/Medium/20px */
+    font-family: Prompt;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 120% */
+    letter-spacing: 0.15px;
+    text-transform: capitalize;
+}
+
+.hr{
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
