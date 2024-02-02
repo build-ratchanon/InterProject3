@@ -1,39 +1,23 @@
 import { Description } from "@mui/icons-material";
-import { Button, Grid, IconButton, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  IconButton,
+  Radio,
+  TextField,
+  Typography,
+  useFormControl,
+} from "@mui/material";
 import { describe } from "node:test";
 import React, { useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddIcon from "@mui/icons-material/Add";
 
 function DynamicInput() {
-  //   const [data, setData] = React.useState([
-  //     {
-  //       detail: "",
-  //     },
-  //   ]);
-
-  //   const handleClick = () => {
-  //     let _data = [...data];
-  //     _data.push({
-  //       detail: "",
-  //     });
-  //     setData(_data);
-  //   };
-
-  //   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
-  //     const { name, value } = e.target;
-  //     const onchangeVal = [...data] as any;
-  //     onchangeVal[i][name] = value;
-  //     setData(onchangeVal);
-  //   };
-  //   const handleDelete = (i: any) => {
-  //     const deleteVal = [...data];
-  //     deleteVal.splice(i, 1);
-  //     setData(deleteVal);
-  //   };
-
-  ///////////////////////////////////////////////////////////////////////////
-
+  const [checked, setChecked] = useState(false);
+  
   const [allData, setAllData] = useState([
     {
       question: "",
@@ -64,11 +48,7 @@ function DynamicInput() {
     setAllData(_allData);
   };
 
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    i,
-    j
-  ) => {
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>, i, j) => {
     const { name, value } = e.target;
     const _allData = [...allData];
     _allData[i].description[j][name] = value;
@@ -111,6 +91,16 @@ function DynamicInput() {
           />
           {allval.description.map((val, j) => (
             <Grid>
+              <FormControlLabel
+                value="option"
+                label=""
+                control={
+                  <Radio
+                    checked={checked}
+                    onClick={() => setChecked(!checked)}
+                  />
+                }
+              />
               <TextField
                 required
                 id="outlined-required"
@@ -152,4 +142,19 @@ function DynamicInput() {
     </Grid>
   );
 }
+
+export function MyFormHelperText() {
+  const { focused } = useFormControl() || {};
+
+  const helperText = React.useMemo(() => {
+    if (focused) {
+      return "This field is being focused";
+    }
+
+    return "Helper text";
+  }, [focused]);
+
+  return <FormHelperText>{helperText}</FormHelperText>;
+}
+
 export default DynamicInput;

@@ -6,10 +6,12 @@ import {
   Box,
   Button,
   FormControlLabel,
+  FormHelperText,
   Grid,
   IconButton,
   Paper,
   Radio,
+  RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
@@ -22,45 +24,23 @@ import DynamicTwoInput from "./test";
 import DynamicInput from "./test";
 
 export default function Home() {
-  const [checked, setChecked] = useState(false);
-  // const [data, setData] = useState([{ detail: "" }, { detail: "" }]);
-  // console.log(data);
-
-  // const handleAdd = () => {
-  //   setData([...data, { detail: "" }]);
-  // };
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
-  //   const { name, value } = e.target;
-  //   const onchangeVal = [...data];
-  //   onchangeVal[i][name] = value;
-  //   setData(onchangeVal);
-  // };
-  // const handleDelete = (i: any) => {
-  //   const deleteVal = [...data];
-  //   deleteVal.splice(i, 1);
-  //   setData(deleteVal);
-  // };
-
-  // const [allData, setAllData] = useState([{ question: "" }]);
-
-  // const handleAddQuestion = () => {
-  //   setAllData([...allData, { question: "" }]);
-  // };
-  // const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
-  //   const { name, value } = e.target;
-  //   const onchangeAllVal = [...allData];
-  //   onchangeAllVal[i][name] = value;
-  //   setData(onchangeAllVal);
-  // };
-
-  ///////////////////////////////////////////////////////////////////////////////
+  const [questionnaire, setQuestionnaire] = useState("");
+  // console.log('Questionnaire: '+ questionnaire)
+  // const [helperText, setHelperText] = React.useState(' ');
 
   const [allData, setAllData] = useState([
     {
       question: "",
-      description: [{ detail: "" }, { detail: "" }],
+      description: [
+        { option: false, detail: "", helptext: "" },
+        { option: false, detail: "", helptext: "" },
+      ],
     },
   ]);
+
+  const handleDuplicate = () => {
+    console.table(allData);
+  };
 
   const handleAddQuestion = () => {
     let _allData = [...allData];
@@ -68,10 +48,14 @@ export default function Home() {
       question: "",
       description: [
         {
+          option: false,
           detail: "",
+          helptext: "",
         },
         {
+          option: false,
           detail: "",
+          helptext: "",
         },
       ],
     });
@@ -85,25 +69,69 @@ export default function Home() {
     setAllData(_allData);
   };
 
-  const handleDescriptionChange=(e: React.ChangeEvent<HTMLInputElement>, i, j)=>{
-    const {name,value}=e.target
+  // const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>, i, j) => {
+  //   const { checked } = e.target;
+  //   const _allData = [...allData];
+  //   _allData[i].description[j].option = checked;
+  //   console.log(i,j,_allData[i].description[j].option);
+  //   console.log(_allData);
+  //   // setAllData(_allData)
+
+  //   // if(_allData[i].description[j].option === true){
+  //   //   setHelperText('This answer is correct.');
+  //   // }
+  //   // else{
+  //   //   setHelperText(' ');
+  //   // }
+
+  //   console.log(i, j, checked)
+
+  // };
+
+  const handleRadio = (i, j) => {
+    console.log(i, j, "index_val");
+
     const _allData = [...allData];
+
+    allData[i].description.map((data, x) => {
+      if (j == x) {
+        data.option = true;
+        data.helptext = "This answer is correct";
+      } else {
+        data.option = false;
+        data.helptext = "";
+      }
+      console.log(data);
+    });
+    setAllData(_allData);
+    console.log(allData);
+  };
+
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    i,
+    j
+  ) => {
+    const { name, value } = e.target;
+    const _allData = [...allData] as any;
     _allData[i].description[j][name] = value;
-    setAllData(_allData)
-    console.log(allData)
-}
+    setAllData(_allData);
+    console.log(allData);
+  };
 
   const handleAddDescription = (i: number) => {
-    let _allData = [...allData];
+    const _allData = [...allData];
     _allData[i].description.push({
+      option: false,
       detail: "",
+      helptext: "",
     });
     setAllData(_allData);
   };
 
   const handleDescriptionDelete = (i, j) => {
     const deleteVal = [...allData];
-    deleteVal[i].description.splice(j, 1)
+    deleteVal[i].description.splice(j, 1);
     setAllData(deleteVal);
   };
 
@@ -112,7 +140,6 @@ export default function Home() {
     deleteVal.splice(i, 1);
     setAllData(deleteVal);
   };
-
 
   return (
     <>
@@ -174,16 +201,25 @@ export default function Home() {
             <Typography className={styles.question} paddingBottom={3}>
               Questionnaire Detail
             </Typography>
-            <TextField required id="outlined-required" label="Name" fullWidth />
+            <TextField
+              required
+              id="outlined-required"
+              fullWidth
+              label="Questionnaire"
+              name="questionnaire"
+              value={questionnaire}
+              onChange={(e) => {
+                setQuestionnaire(e.target.value);
+              }}
+            />
           </Grid>
           <hr />
-
 
           {allData.map((allval, i) => (
             <Grid sx={{ p: 3 }}>
               <Grid>
                 <Typography className={styles.question} paddingBottom={3}>
-                  Question {i+1}
+                  Question {i + 1}
                 </Typography>
                 <TextField
                   required
@@ -199,28 +235,31 @@ export default function Home() {
                 {/* description */}
                 {allval.description.map((val, j) => (
                   <Grid display={"flex"} alignItems={"center"} sx={{ mb: 3 }}>
-                    <FormControlLabel
-                      value="correct"
-                      label=""
-                      control={
-                        <Radio
-                          checked={checked}
-                          onClick={() => setChecked(!checked)}
-                          value="check"
-                        />
-                      }
-                    />
-
+                    <RadioGroup
+                      sx={{
+                        display: "flex",
+                        flexWrap: "nowrap",
+                        flexDirection: "row",
+                      }}
+                      onChange={() => handleRadio(i, j)}
+                      // onChange={(e) => handleRadioChange(e, i, j)}
+                    >
+                      <FormControlLabel
+                        control={<Radio checked={val.option} />}
+                        label=""
+                        name="Check"
+                      />
+                    </RadioGroup>
                     <TextField
                       required
                       id="outlined-required"
                       fullWidth
                       label="Description"
                       name="detail"
+                      helperText={val.helptext}
                       value={val.detail}
                       onChange={(e) => handleDescriptionChange(e, i, j)}
                     />
-
                     <IconButton
                       aria-label="delete"
                       onClick={() => handleDescriptionDelete(i, j)}
@@ -239,7 +278,8 @@ export default function Home() {
                   startIcon={<AddIcon />}
                   onClick={() => {
                     handleAddDescription(i);
-                  }}                >
+                  }}
+                >
                   ADD CHOICE
                 </Button>
                 <hr className={styles.hr} />
@@ -251,6 +291,7 @@ export default function Home() {
                       "&:hover": { color: "#123456" },
                     }}
                     startIcon={<ContentCopyIcon />}
+                    onClick={handleDuplicate}
                   >
                     DUPLICATE
                   </Button>
@@ -269,10 +310,9 @@ export default function Home() {
               </Grid>
             </Grid>
           ))}
-          
 
           <hr />
-          
+
           <Grid
             display={"flex"}
             flexDirection={"column"}
@@ -297,7 +337,7 @@ export default function Home() {
           </Grid>
         </Paper>
       </Box>
-      {/* <DynamicInput/>  */}
+      {/* <DynamicInput /> */}
     </>
   );
 }
