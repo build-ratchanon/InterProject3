@@ -22,6 +22,7 @@ import React, { ChangeEvent, useState } from "react";
 import { SettingsApplicationsSharp } from "@mui/icons-material";
 import DynamicTwoInput from "./test";
 import DynamicInput from "./test";
+import { join } from "path";
 
 export default function Home() {
   const [questionnaire, setQuestionnaire] = useState("");
@@ -37,30 +38,13 @@ export default function Home() {
       ],
     },
   ]);
+  const handleCancel = () => {
 
-  const handleDuplicate = () => {
-    console.table(allData);
-  };
+  }
 
-  const handleAddQuestion = () => {
-    let _allData = [...allData];
-    _allData.push({
-      question: "",
-      description: [
-        {
-          option: false,
-          detail: "",
-          helptext: "",
-        },
-        {
-          option: false,
-          detail: "",
-          helptext: "",
-        },
-      ],
-    });
-    setAllData(_allData);
-  };
+  const handleSave = () => {
+    
+  }
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
     const { name, value } = e.target;
@@ -68,25 +52,6 @@ export default function Home() {
     _allData[i][name] = value;
     setAllData(_allData);
   };
-
-  // const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>, i, j) => {
-  //   const { checked } = e.target;
-  //   const _allData = [...allData];
-  //   _allData[i].description[j].option = checked;
-  //   console.log(i,j,_allData[i].description[j].option);
-  //   console.log(_allData);
-  //   // setAllData(_allData)
-
-  //   // if(_allData[i].description[j].option === true){
-  //   //   setHelperText('This answer is correct.');
-  //   // }
-  //   // else{
-  //   //   setHelperText(' ');
-  //   // }
-
-  //   console.log(i, j, checked)
-
-  // };
 
   const handleRadio = (i, j) => {
     console.log(i, j, "index_val");
@@ -107,11 +72,7 @@ export default function Home() {
     console.log(allData);
   };
 
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    i,
-    j
-  ) => {
+  const handleDescriptionChange = ( e: React.ChangeEvent<HTMLInputElement>, i, j ) => {
     const { name, value } = e.target;
     const _allData = [...allData] as any;
     _allData[i].description[j][name] = value;
@@ -135,10 +96,63 @@ export default function Home() {
     setAllData(deleteVal);
   };
 
+  const handleDuplicate = (i) => {
+    const _allData = [...allData];
+    const _description = [...allData[i].description];
+    // _allData.push({
+    //   question: dupData.question,
+    //   description: [
+    //     {
+    //       option: dupData.description[i].option,
+    //       detail: dupData.description[i].detail,
+    //       helptext: dupData.description[i].helptext,
+    //     },
+    //     {
+    //       option: dupData.description[i].option,
+    //       detail: dupData.description[i].detail,
+    //       helptext: dupData.description[i].helptext,  
+    //     },
+        
+    //   ],
+    // });
+    
+
+    console.log(_allData[i])
+
+    _allData.push({
+      question: _allData[i].question,
+      description: _description,
+      
+    });
+
+    setAllData(_allData)
+  };
+
+
   const handleQuestionDelete = (i: any) => {
     const deleteVal = [...allData];
     deleteVal.splice(i, 1);
     setAllData(deleteVal);
+  };
+
+  const handleAddQuestion = () => {
+    const _allData = [...allData];
+    _allData.push({
+      question: "",
+      description: [
+        {
+          option: false,
+          detail: "",
+          helptext: "",
+        },
+        {
+          option: false,
+          detail: "",
+          helptext: "",
+        },
+      ],
+    });
+    setAllData(_allData);
   };
 
   return (
@@ -231,7 +245,7 @@ export default function Home() {
                   value={allval.question}
                   onChange={(e) => handleQuestionChange(e, i)}
                 />
-
+                  
                 {/* description */}
                 {allval.description.map((val, j) => (
                   <Grid display={"flex"} alignItems={"center"} sx={{ mb: 3 }}>
@@ -291,7 +305,7 @@ export default function Home() {
                       "&:hover": { color: "#123456" },
                     }}
                     startIcon={<ContentCopyIcon />}
-                    onClick={handleDuplicate}
+                    onClick={() => handleDuplicate(i)}
                   >
                     DUPLICATE
                   </Button>
