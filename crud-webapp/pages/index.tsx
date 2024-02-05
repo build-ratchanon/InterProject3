@@ -23,6 +23,8 @@ import { SettingsApplicationsSharp } from "@mui/icons-material";
 import DynamicTwoInput from "./test";
 import DynamicInput from "./test";
 import { join } from "path";
+import _ from "lodash";
+import { useForm } from "react-hook-form";
 
 export default function Home() {
   const [questionnaire, setQuestionnaire] = useState("");
@@ -38,25 +40,22 @@ export default function Home() {
       ],
     },
   ]);
-  const handleCancel = () => {
-
-  }
+  const handleCancel = () => {};
 
   const handleSave = () => {
-    
-  }
+    console.table(allData);
+  };
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
     const { name, value } = e.target;
-    const _allData = [...allData] as any;
+    const _allData = _.cloneDeep(allData) as any;
     _allData[i][name] = value;
     setAllData(_allData);
+    console.log(allData);
   };
 
   const handleRadio = (i, j) => {
-    console.log(i, j, "index_val");
-
-    const _allData = [...allData];
+    const _allData = _.clone(allData);
 
     allData[i].description.map((data, x) => {
       if (j == x) {
@@ -66,22 +65,26 @@ export default function Home() {
         data.option = false;
         data.helptext = "";
       }
-      console.log(data);
     });
+
     setAllData(_allData);
     console.log(allData);
   };
 
-  const handleDescriptionChange = ( e: React.ChangeEvent<HTMLInputElement>, i, j ) => {
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    i,
+    j
+  ) => {
     const { name, value } = e.target;
-    const _allData = [...allData] as any;
+    const _allData = _.cloneDeep(allData) as any;
     _allData[i].description[j][name] = value;
     setAllData(_allData);
     console.log(allData);
   };
 
   const handleAddDescription = (i: number) => {
-    const _allData = [...allData];
+    const _allData = _.cloneDeep(allData);
     _allData[i].description.push({
       option: false,
       detail: "",
@@ -91,52 +94,39 @@ export default function Home() {
   };
 
   const handleDescriptionDelete = (i, j) => {
-    const deleteVal = [...allData];
+    const deleteVal = _.cloneDeep(allData);
     deleteVal[i].description.splice(j, 1);
     setAllData(deleteVal);
   };
 
   const handleDuplicate = (i) => {
-    const _allData = [...allData];
-    const _description = [...allData[i].description];
-    // _allData.push({
-    //   question: dupData.question,
-    //   description: [
-    //     {
-    //       option: dupData.description[i].option,
-    //       detail: dupData.description[i].detail,
-    //       helptext: dupData.description[i].helptext,
-    //     },
-    //     {
-    //       option: dupData.description[i].option,
-    //       detail: dupData.description[i].detail,
-    //       helptext: dupData.description[i].helptext,  
-    //     },
-        
-    //   ],
-    // });
-    
+    // const _allData = [...allData  ];
+    const _allData = _.cloneDeep(allData);
 
-    console.log(_allData[i])
+    // const _description = [...allData[i].description];
+    const _description = _.cloneDeep(allData[i].description);
+
+    console.log(_allData[i]);
 
     _allData.push({
       question: _allData[i].question,
       description: _description,
-      
     });
 
-    setAllData(_allData)
+    setAllData(_allData);
+    console.log(allData);
   };
 
-
   const handleQuestionDelete = (i: any) => {
-    const deleteVal = [...allData];
+    const deleteVal = _.cloneDeep(allData);
     deleteVal.splice(i, 1);
     setAllData(deleteVal);
   };
 
   const handleAddQuestion = () => {
-    const _allData = [...allData];
+    // const _allData = [...allData];
+    const _allData = _.cloneDeep(allData);
+
     _allData.push({
       question: "",
       description: [
@@ -153,6 +143,7 @@ export default function Home() {
       ],
     });
     setAllData(_allData);
+    console.log(allData);
   };
 
   return (
@@ -164,7 +155,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Grid
+      {/* <Grid
         sx={{ "& button": { m: 1 } }}
         paddingY={1}
         className={styles.navBar}
@@ -202,14 +193,60 @@ export default function Home() {
               width: 180,
               px: 2,
             }}
+            onClick={handleSave}
           >
             save
           </Button>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       {/* Question */}
       <Box component="form" sx={{ background: "#F3F4F6" }}>
+        <Grid
+          sx={{ "& button": { m: 1 } }}
+          paddingY={1}
+          className={styles.navBar}
+        >
+          <Grid className={styles.logo} marginY={2} marginLeft={3}>
+            🦊 Foxbith Questionnaire
+          </Grid>
+          <hr />
+          <Grid
+            margin={1.5}
+            display={"flex"}
+            justifyContent={"flex-end"}
+            alignItems={"center"}
+          >
+            <Button
+              variant="outlined"
+              size="large"
+              sx={{
+                color: "#FF5C00",
+                border: "1px solid #FF5C00",
+                "&:hover": { borderColor: "#d95000" },
+                px: 2,
+              }}
+            >
+              cancel
+            </Button>
+
+            <Button
+              variant="contained"
+              size="large"
+              sx={{
+                color: "#FFF",
+                backgroundColor: "#FF5C00",
+                "&:hover": { backgroundColor: "#d95000" },
+                width: 180,
+                px: 2,
+              }}
+              onClick={handleSave}
+            >
+              save
+            </Button>
+          </Grid>
+        </Grid>
+
         <Paper sx={{ margin: 3 }}>
           <Grid sx={{ p: 3 }}>
             <Typography className={styles.question} paddingBottom={3}>
@@ -245,7 +282,7 @@ export default function Home() {
                   value={allval.question}
                   onChange={(e) => handleQuestionChange(e, i)}
                 />
-                  
+
                 {/* description */}
                 {allval.description.map((val, j) => (
                   <Grid display={"flex"} alignItems={"center"} sx={{ mb: 3 }}>
