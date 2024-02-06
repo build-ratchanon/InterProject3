@@ -1,5 +1,4 @@
 import React from 'react';
-import TextField from '@mui/material/TextField';
 import {
   Button,
   Radio,
@@ -10,6 +9,7 @@ import {
   FormHelperText,
   FormGroup,
   Checkbox,
+  TextField,
 } from '@mui/material';
 import { useForm } from "react-hook-form";
 
@@ -52,7 +52,7 @@ const App = () => {
           error={Boolean(errors.email)}
           helperText={errors.email?.message}
         />
-        {/* Radio button */}
+{/* Radio button */}
         <FormControl error={Boolean(errors.gender)} >
           <FormLabel component="legend"> Choose Your Gender </FormLabel>
           <RadioGroup row aria-label="gender" name="gender">
@@ -82,7 +82,7 @@ const App = () => {
           <FormHelperText style={{color:'#d32f2f'}}>{errors.gender?.message}</FormHelperText>
         </FormControl>
         <div className="clearfix"></div>
-        {/* Check box */}
+{/* Check box */}
         <FormGroup 
           error={Boolean(errors.tnc)}
           style={{ display: "block", marginTop: "17px" }}

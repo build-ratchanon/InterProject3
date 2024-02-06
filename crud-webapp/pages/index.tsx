@@ -18,32 +18,91 @@ import {
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddIcon from "@mui/icons-material/Add";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import React, { ChangeEvent, useState } from "react";
-import { SettingsApplicationsSharp } from "@mui/icons-material";
-import DynamicTwoInput from "./test";
-import DynamicInput from "./test";
-import { join } from "path";
+import React, { useState } from "react";
 import _ from "lodash";
-import { useForm } from "react-hook-form";
+
 
 export default function Home() {
   const [questionnaire, setQuestionnaire] = useState("");
-  // console.log('Questionnaire: '+ questionnaire)
-  // const [helperText, setHelperText] = React.useState(' ');
+
+  const [errorQn, setErrorQn] = React.useState(false);
+  const [helperTextQn, setHelperTextQn] = React.useState('');
 
   const [allData, setAllData] = useState([
     {
       question: "",
+      qerror: false, 
+      qerrorText: "" ,
       description: [
-        { option: false, detail: "", helptext: "" },
-        { option: false, detail: "", helptext: "" },
+        { option: false, detail: "", helptext: "", error: false, errorText: "" },
+        { option: false, detail: "", helptext: "", error: false, errorText: "" },
       ],
     },
   ]);
-  const handleCancel = () => {};
 
-  const handleSave = () => {
-    console.table(allData);
+  const handleCancel = () => {
+    setQuestionnaire("")
+    setAllData([
+      {
+        question: "",
+        qerror: false, 
+        qerrorText: "" ,
+        description: [
+          { option: false, detail: "", helptext: "", error: false, errorText: "" },
+          { option: false, detail: "", helptext: "", error: false, errorText: "" },
+        ],
+      },
+    ])
+  };
+
+  const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const _questionnaire = _.clone(questionnaire)
+    if(_questionnaire === ""){
+      console.log('qn check')
+      setHelperTextQn('Please fill in this option.');
+      setErrorQn(true);
+    }
+    else{
+      setHelperTextQn('');
+      setErrorQn(false);
+    }
+
+    const _allData = _.cloneDeep(allData)
+
+    for (let i = 0; i < _allData.length; i++) {
+      console.log('loop1')
+      if(_allData[i].question === ''){
+        console.log('q check')
+        _allData[i].qerrorText = 'Please fill in this option.';
+        _allData[i].qerror = true;
+      }
+      else{
+        _allData[i].qerrorText = ' ';
+        _allData[i].qerror = false;
+      }
+      // const element = data[index];
+      for (let j = 0; j < _allData[i].description.length; j++) {
+        console.log('loop2')
+        if(_allData[i].description[j].detail === ''){
+          console.log('detail missing', j)
+          _allData[i].description[j].errorText = 'Please fill in this option.';
+          _allData[i].description[j].error = true;
+          console.log( _allData[i].description[j].error)
+        }
+        else{
+          console.log(j, 'detail ok')
+          _allData[i].description[j].errorText = ' ';
+          _allData[i].description[j].error = false;
+          console.log( _allData[i].description[j].error)
+        }
+      }
+    }
+
+    console.log(questionnaire)
+    console.log(allData);
+    setAllData(_allData)
   };
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
@@ -71,11 +130,7 @@ export default function Home() {
     console.log(allData);
   };
 
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    i,
-    j
-  ) => {
+  const handleDescriptionChange = ( e: React.ChangeEvent<HTMLInputElement>, i, j ) => {
     const { name, value } = e.target;
     const _allData = _.cloneDeep(allData) as any;
     _allData[i].description[j][name] = value;
@@ -89,6 +144,8 @@ export default function Home() {
       option: false,
       detail: "",
       helptext: "",
+      error: false, 
+      errorText: ""
     });
     setAllData(_allData);
   };
@@ -100,16 +157,15 @@ export default function Home() {
   };
 
   const handleDuplicate = (i) => {
-    // const _allData = [...allData  ];
     const _allData = _.cloneDeep(allData);
-
-    // const _description = [...allData[i].description];
     const _description = _.cloneDeep(allData[i].description);
 
     console.log(_allData[i]);
 
     _allData.push({
       question: _allData[i].question,
+      qerror: _allData[i].qerror,
+      qerrorText: _allData[i].qerrorText,
       description: _description,
     });
 
@@ -129,16 +185,22 @@ export default function Home() {
 
     _allData.push({
       question: "",
+      qerror: false, 
+      qerrorText: "" ,
       description: [
         {
           option: false,
           detail: "",
           helptext: "",
+          error: false, 
+          errorText: ""
         },
         {
           option: false,
           detail: "",
           helptext: "",
+          error: false, 
+          errorText: ""
         },
       ],
     });
@@ -155,53 +217,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* <Grid
-        sx={{ "& button": { m: 1 } }}
-        paddingY={1}
-        className={styles.navBar}
-      >
-        <Grid className={styles.logo} marginY={2} marginLeft={3}>
-          🦊 Foxbith Questionnaire
-        </Grid>
-        <hr />
-        <Grid
-          margin={1.5}
-          display={"flex"}
-          justifyContent={"flex-end"}
-          alignItems={"center"}
-        >
-          <Button
-            variant="outlined"
-            size="large"
-            sx={{
-              color: "#FF5C00",
-              border: "1px solid #FF5C00",
-              "&:hover": { borderColor: "#d95000" },
-              px: 2,
-            }}
-          >
-            cancel
-          </Button>
-
-          <Button
-            variant="contained"
-            size="large"
-            sx={{
-              color: "#FFF",
-              backgroundColor: "#FF5C00",
-              "&:hover": { backgroundColor: "#d95000" },
-              width: 180,
-              px: 2,
-            }}
-            onClick={handleSave}
-          >
-            save
-          </Button>
-        </Grid>
-      </Grid> */}
-
       {/* Question */}
-      <Box component="form" sx={{ background: "#F3F4F6" }}>
+      <form
+        // component="form"
+        // sx={{ background: "#F3F4F6" }}
+        onSubmit={handleSave}
+
+      >
         <Grid
           sx={{ "& button": { m: 1 } }}
           paddingY={1}
@@ -226,6 +248,7 @@ export default function Home() {
                 "&:hover": { borderColor: "#d95000" },
                 px: 2,
               }}
+              onClick={handleCancel}
             >
               cancel
             </Button>
@@ -240,7 +263,7 @@ export default function Home() {
                 width: 180,
                 px: 2,
               }}
-              onClick={handleSave}
+              type="submit"
             >
               save
             </Button>
@@ -253,16 +276,19 @@ export default function Home() {
               Questionnaire Detail
             </Typography>
             <TextField
-              required
+              // required
+              error={errorQn}
               id="outlined-required"
               fullWidth
-              label="Questionnaire"
+              label="Questionnaire*"
               name="questionnaire"
               value={questionnaire}
               onChange={(e) => {
                 setQuestionnaire(e.target.value);
               }}
             />
+            <FormHelperText sx={{color: 'red'}}>{helperTextQn}</FormHelperText>
+
           </Grid>
           <hr />
 
@@ -272,20 +298,23 @@ export default function Home() {
                 <Typography className={styles.question} paddingBottom={3}>
                   Question {i + 1}
                 </Typography>
-                <TextField
-                  required
-                  id="outlined-required"
-                  sx={{ mb: 3 }}
-                  fullWidth
-                  label="Question"
-                  name="question"
-                  value={allval.question}
-                  onChange={(e) => handleQuestionChange(e, i)}
-                />
 
+                <Grid sx={{ mb: 3 }}>
+                  <TextField
+                    error={allval.qerror ? true : false}
+                    id="outlined-required"
+                    fullWidth
+                    label="Question*"
+                    name="question"
+                    value={allval.question}
+                    onChange={(e) => handleQuestionChange(e, i)}
+                  />
+                  <FormHelperText sx={{color: 'red'}}>{allval.qerrorText}</FormHelperText>
+                </Grid>
+                
                 {/* description */}
                 {allval.description.map((val, j) => (
-                  <Grid display={"flex"} alignItems={"center"} sx={{ mb: 3 }}>
+                  <Grid display={"flex"} alignItems={"center"} justifyContent={'space-between'} sx={{ mb: 3 }}>
                     <RadioGroup
                       sx={{
                         display: "flex",
@@ -293,7 +322,6 @@ export default function Home() {
                         flexDirection: "row",
                       }}
                       onChange={() => handleRadio(i, j)}
-                      // onChange={(e) => handleRadioChange(e, i, j)}
                     >
                       <FormControlLabel
                         control={<Radio checked={val.option} />}
@@ -301,16 +329,22 @@ export default function Home() {
                         name="Check"
                       />
                     </RadioGroup>
-                    <TextField
-                      required
+
+                    <Grid sx={{flexGrow: '1'}}>
+                      <TextField
+                      // required
+                      error={val.error ? true : false}
                       id="outlined-required"
                       fullWidth
-                      label="Description"
+                      label="Description*"
                       name="detail"
-                      helperText={val.helptext}
                       value={val.detail}
                       onChange={(e) => handleDescriptionChange(e, i, j)}
-                    />
+                      />
+                      <FormHelperText sx={{color: 'red'}}>{val.errorText}</FormHelperText>
+                      <FormHelperText>{val.helptext}</FormHelperText>
+                    </Grid>
+
                     <IconButton
                       aria-label="delete"
                       onClick={() => handleDescriptionDelete(i, j)}
@@ -387,8 +421,8 @@ export default function Home() {
             </Button>
           </Grid>
         </Paper>
-      </Box>
-      {/* <DynamicInput /> */}
+      </form>
+      {/* <App /> */}
     </>
   );
 }
