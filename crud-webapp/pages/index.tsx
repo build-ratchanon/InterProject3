@@ -105,7 +105,7 @@ export default function Home() {
     setAllData(_allData)
   };
 
-  const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, i) => {
+  const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, i: any) => {
     const { name, value } = e.target;
     const _allData = _.cloneDeep(allData) as any;
     _allData[i][name] = value;
@@ -113,7 +113,7 @@ export default function Home() {
     console.log(allData);
   };
 
-  const handleRadio = (i, j) => {
+  const handleRadio = (i: any, j: any) => {
     const _allData = _.clone(allData);
 
     allData[i].description.map((data, x) => {
@@ -130,7 +130,7 @@ export default function Home() {
     console.log(allData);
   };
 
-  const handleDescriptionChange = ( e: React.ChangeEvent<HTMLInputElement>, i, j ) => {
+  const handleDescriptionChange = ( e: React.ChangeEvent<HTMLInputElement>, i: any, j: any ) => {
     const { name, value } = e.target;
     const _allData = _.cloneDeep(allData) as any;
     _allData[i].description[j][name] = value;
@@ -150,13 +150,13 @@ export default function Home() {
     setAllData(_allData);
   };
 
-  const handleDescriptionDelete = (i, j) => {
+  const handleDescriptionDelete = (i: any, j: any) => {
     const deleteVal = _.cloneDeep(allData);
     deleteVal[i].description.splice(j, 1);
     setAllData(deleteVal);
   };
 
-  const handleDuplicate = (i) => {
+  const handleDuplicate = (i: any) => {
     const _allData = _.cloneDeep(allData);
     const _description = _.cloneDeep(allData[i].description);
 
